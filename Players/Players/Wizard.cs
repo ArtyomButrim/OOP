@@ -59,6 +59,7 @@ namespace Players
             List<string> a = new List<string>();
             a.Add("Имя: " + name);
             a.Add("Возраст: " + age);
+            a.Add("Характеристики персонажа: ");
             a.Add("Магический урон: " + magicDamage);
             a.Add("Подвластная стихия: " + magicType);
             a.Add("Мана: " + mana);

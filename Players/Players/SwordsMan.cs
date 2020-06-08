@@ -59,12 +59,16 @@ namespace Players
             List<string> a = new List<string>();
             a.Add("Имя: " + name);
             a.Add("Возраст: " + age);
+            a.Add("Характеристики персонажа: ");
             a.Add("Физический урон: " + fizDamage);
             a.Add("Выносливость:" + stamina);
-            a.Add("Вероятность нанесения критического удара: " + kritDamage);
-            a.Add("Защита " + defence);
-            a.Add("Возможность использовать второй меч: " + canUseSecondSword);
-            a.Add("Особый навык мечника" + skill);
+            a.Add("Вероятность нанесения \nкритического удара: " + kritDamage);
+            a.Add("Защита: " + defence);
+            a.Add("Возможность использовать \nвторой меч: " + canUseSecondSword);
+            a.Add("Особый навык мечника: " + skill);
+            a.Add("Оружие:");
+            a.Add("\tОсобый навык оружия: " + weapon._specialSkill);
+            a.Add("\tДополнительный урон: " + weapon._dopDamage);
             return a;
         }
 

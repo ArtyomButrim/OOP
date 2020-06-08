@@ -60,12 +60,16 @@ namespace Players
             List<string> info = new List<string>();
             info.Add("Имя: " + name);
             info.Add("Возраст : " + age);
+            info.Add("Характеристики персонажа: ");
             info.Add("Физический урон: " + fizDamage);
             info.Add("Выносливость:" + stamina);
-            info.Add("Вероятность нанесения критического удара: " + kritDamage);
-            info.Add("Защита " + defence);
+            info.Add("Вероятность нанесения \nкритического удара: " + kritDamage);
+            info.Add("Защита: " + defence);
             info.Add("Точность попадания: " + shotAccuracy);
             info.Add("Тип стрел: " + arrow);
+            info.Add("Оружие:");
+            info.Add("\tОсобый навык оружия: " + weapon._specialSkill);
+            info.Add("\tДополнительный урон: " + weapon._dopDamage);
             return info;
 
         }
