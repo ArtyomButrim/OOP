@@ -173,6 +173,7 @@
             this.Controls.Add(this.label1);
             this.Name = "EditWizardsForm";
             this.Text = "EditWizardsForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditWizardsForm_FormClosing);
             this.VisibleChanged += new System.EventHandler(this.EditWizardsForm_VisibleChanged);
             this.ResumeLayout(false);
             this.PerformLayout();

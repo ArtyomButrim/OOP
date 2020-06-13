@@ -94,5 +94,15 @@ namespace Players
                 txtMana.Text = "";
             }
         }
+
+        private void EditWizardsForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                form.Enabled = true;
+                Hide();
+            }
+        }
     }
 }
