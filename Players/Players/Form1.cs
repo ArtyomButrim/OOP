@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics.PerformanceData;
+using Plugin;
 
 namespace Players
 {
@@ -20,6 +21,14 @@ namespace Players
         {
             instance = this;
             new ProjectContainer();
+
+            ProjectContainer.instance.putNewSerializer(new JSONSerializer());
+            ProjectContainer.instance.putNewSerializer(new BinarySerializer());
+            ProjectContainer.instance.putNewSerializer(new MySerializer());
+
+           // LoadBase64Coding();
+            LoadZBase32Coding();
+
             InitializeComponent();
 
             charactersType.DropDownStyle = ComboBoxStyle.DropDownList;
@@ -168,6 +177,185 @@ namespace Players
             else
             {
                 MessageBox.Show("Форма не существует!");
+            }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            List<Player> players = null;
+            List<object> checkedPlayer = new List<object>();
+            List<string> checkedPlayerNames = new List<string>();
+
+            for (int i = 0; i < playerInfo.CheckedItems.Count; i++)
+            {
+                checkedPlayerNames.Add(playerInfo.CheckedItems[i].ToString());
+            }
+
+            players = ProjectContainer.instance.getExistingPlayer(charactersType.SelectedItem.ToString());
+
+            if (players != null)
+            {
+                foreach (Player pl in players)
+                {
+                    if (checkedPlayerNames.Contains(pl.getPlayerName()))
+                    {
+                        checkedPlayer.Add(pl);
+                    }
+                }
+            }
+
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "JSON files (*.json)|*.json|Binary files (*.binar)|*.binar|Special files (*.special)|*.special|JSON files with zbase32 (*.jsonz32)|*.jsonz32|JSON files with base64 (*.json64)|*.json64|Binary files with zbase32 (*.binarz32)|*.binarz32|Binary files eith base64 (*.binar64)|*.binar64|Special files with zbase32(*.specialz32)|*.specialz32|Special files with base64(*.special64)|*.special64";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                string ext = Path.GetExtension(saveFileDialog1.FileName);
+                string[] ext2 = ext.Split('.');
+                MainSerializer serializer = ProjectContainer.instance.getSerializer(ext2[ext2.Length - 1]);
+
+                if (serializer != null)
+                {
+                    Stream myStream;
+                    if ((myStream = saveFileDialog1.OpenFile()) != null && saveFileDialog1.FileName != "" && checkedPlayer.Count != 0)
+                    {
+                        serializer.Serialize(checkedPlayer, myStream);
+                    }
+                }
+                else
+                {
+                    string pluginName = FindPluginNameByExtention(ext2[ext2.Length - 1]);
+                    string serializerName = FindSerializerNameByExtention(ext2[ext2.Length - 1]);
+                    
+                    MainSerializer newSerializer = ProjectContainer.instance.getSerializer(serializerName);
+                    PluginClass newPlugin = ProjectContainer.instance.getPluginFromDictionary(pluginName);
+
+                    Stream myStream;
+                    if ((myStream = saveFileDialog1.OpenFile()) != null && saveFileDialog1.FileName != "" && checkedPlayer.Count != 0)
+                    {
+                        newSerializer.SerializeWithPlugin(checkedPlayer, myStream, newPlugin);
+                    }
+                }
+            }
+        }
+
+        public string FindPluginNameByExtention(string extention)
+        {
+            if (extention == "json64")
+            {
+                return "64";
+            }
+            else if (extention == "jsonz32")
+            {
+                return "z32";
+            }
+            else if (extention == "json32")
+            {
+                return "32";
+            }
+            else if (extention == "binar64")
+            {
+                return "64";
+            }
+            else if (extention == "binarz32")
+            {
+                return "z32";
+            }
+            else if (extention == "binar32")
+            {
+                return "32";
+            }
+            else if (extention == "special64")
+            {
+                return "64";
+            }
+            else if (extention == "special32")
+            {
+                return "64";
+            }
+            else 
+            {
+                return "z32";
+            }
+        }
+
+        public string FindSerializerNameByExtention(string extention)
+        {
+            if (extention == "json64")
+            {
+                return "json";
+            }
+            else if (extention == "jsonz32")
+            {
+                return "json";
+            }
+            else if (extention == "json32")
+            {
+                return "json";
+            }
+            else if (extention == "binar64")
+            {
+                return "binar";
+            }
+            else if (extention == "binarz32")
+            {
+                return "binar";
+            }
+            else if (extention == "binar32")
+            {
+                return "binar";
+            }
+            else if (extention == "special64")
+            {
+                return "special";
+            }
+            else if (extention == "special32")
+            {
+                return "special";
+            }
+            else
+            {
+                return "special";
+            }
+        }
+
+        private void playerInfo_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Checked)
+            {
+                btnSave.Enabled = true;
+            }
+            else if (playerInfo.CheckedItems.Count == 1)
+            {
+                btnSave.Enabled = false;
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LoadZBase32Coding()
+        {
+            string pluginsLocation = Directory.GetCurrentDirectory() + "//Plugin";
+
+            var pluginFiles = Directory.GetFiles(pluginsLocation, "*.dll");
+            
+            foreach (var file in pluginFiles)
+            {
+                Assembly assemblyOfPlugin = Assembly.LoadFrom(file);
+
+                var types = assemblyOfPlugin.GetTypes().
+                                Where(t => t.GetInterfaces().
+                                Where(i => i.FullName == typeof(PluginClass).FullName).Any());
+
+                foreach (var type in types)
+                {
+                    var plugin = assemblyOfPlugin.CreateInstance(type.FullName) as PluginClass;
+                    ProjectContainer.instance.addNewPluginToDictionary(plugin.getExtention(), plugin);
+                }
             }
         }
     }

@@ -7,11 +7,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using Plugin;
 
 namespace Players
 {
+    [Serializable]
     public partial class EditWizardsForm : Form
     {
+        bool playerAddedShowEnabled = false;
         Form form;
         public EditWizardsForm(Form sender)
         {
@@ -104,5 +108,158 @@ namespace Players
                 Hide();
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Wizard wizard = new Wizard();
+            openFileDialog.Title = "Открыть...";
+
+            openFileDialog.Filter = "JSON files|*.json|Binary files|*.binar|Special files|*.special|JSON files with zbase32 (*.jsonz32)|*.jsonz32|JSON files with base64 (*.json64)|*.json64|Binary files with zbase32 (*.binarz32)|*.binarz32|Binary files eith base64 (*.binar64)|*.binar64|Special files with zbase32(*.specialz32)|*.specialz32|Special files with base64(*.special64)|*.special64";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (File.Exists(openFileDialog.FileName))
+                {
+                    string[] st = openFileDialog.FileName.Split('.');
+                    List<Wizard> a;
+
+                    MainSerializer serializer = ProjectContainer.instance.getSerializer(st[st.Length - 1]);
+
+                    if (serializer == null)
+                    {
+                        string pluginName = FindPluginNameByExtention(st[st.Length - 1]);
+                        string serializerName = FindSerializerNameByExtention(st[st.Length - 1]);
+
+                        MainSerializer newSerializer = ProjectContainer.instance.getSerializer(serializerName);
+                        PluginClass plugin = ProjectContainer.instance.getPluginFromDictionary(pluginName);
+
+                        a = newSerializer.DeserializeWithPlugin<Wizard>(openFileDialog.FileName, plugin);
+                    }
+                    else
+                    {
+                        a = serializer.Deserialize<Wizard>(openFileDialog.FileName);
+                    }
+
+                    if (a != null)
+                    {
+                        foreach (Wizard player in a)
+                        {
+                            bool isAdd = true;
+                            foreach (Player pl in Wizard.wizards)
+                            {
+                                if (player.getPlayerName() == pl.getPlayerName())
+                                {
+                                    isAdd = false;
+                                }
+                            }
+                            if (isAdd)
+                            {
+                                Wizard.wizards.Add(player);
+                            }
+                        }
+
+                        List<Player> players = new List<Player>(a);
+                        ProjectContainer.instance.putNewPlayers(wizard.GetType().Name, Wizard.wizards);
+
+                        txtName.Text = a[a.Count - 1].getPlayerName();
+                        txtName.ReadOnly = false;
+                        txtAge.Text = a[a.Count - 1]._age.ToString();
+                        txtElement.Text = a[a.Count - 1]._magicType;
+                        txtMagicDamage.Text = a[a.Count - 1]._magicDamage.ToString();
+                        txtMana.Text = a[a.Count - 1]._mana.ToString();
+                        playerAddedShowEnabled = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Невозможно получить информацию " + wizard.GetType().Name + " с файла");
+                    }
+                }
+            }
+            if (playerAddedShowEnabled)
+            {
+                playerAddedShowEnabled = false;
+                MessageBox.Show("Информация о " + wizard.GetType().Name + " была успешно добавлена");
+            }
+        }
+
+        public string FindPluginNameByExtention(string extention)
+        {
+            if (extention == "json64")
+            {
+                return "64";
+            }
+            else if (extention == "jsonz32")
+            {
+                return "z32";
+            }
+            else if (extention == "json32")
+            {
+                return "32";
+            }
+            else if (extention == "binar64")
+            {
+                return "64";
+            }
+            else if (extention == "binarz32")
+            {
+                return "z32";
+            }
+            else if (extention == "binar32")
+            {
+                return "32";
+            }
+            else if (extention == "special64")
+            {
+                return "64";
+            }
+            else if (extention == "special32")
+            {
+                return "64";
+            }
+            else
+            {
+                return "z32";
+            }
+        }
+
+        public string FindSerializerNameByExtention(string extention)
+        {
+            if (extention == "json64")
+            {
+                return "json";
+            }
+            else if (extention == "jsonz32")
+            {
+                return "json";
+            }
+            else if (extention == "json32")
+            {
+                return "json";
+            }
+            else if (extention == "binar64")
+            {
+                return "binar";
+            }
+            else if (extention == "binarz32")
+            {
+                return "binar";
+            }
+            else if (extention == "binar32")
+            {
+                return "binar";
+            }
+            else if (extention == "special64")
+            {
+                return "special";
+            }
+            else if (extention == "special32")
+            {
+                return "special";
+            }
+            else
+            {
+                return "special";
+            }
+        }
     }
-}
+ }

@@ -7,11 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using Plugin;
 
 namespace Players
 {
+    [Serializable]
     public partial class EditSwordsManForm : Form
     {
+
+        bool playerAddedShowEnabled = false;
         Form form;
         public EditSwordsManForm(Form sender)
         {
@@ -131,6 +136,150 @@ namespace Players
                 txtCanUsesecondSword.Text = "";
                 txtSpecialSkill.Text = "";
                 txtDopDamage.Text = "";
+            }
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SwordsMan archer = new SwordsMan();
+            openFileDialog.Title = "Открыть...";
+
+            openFileDialog.Filter = "JSON files|*.json|Binary files|*.binar|Special files|*.special|JSON files with zbase32 (*.jsonz32)|*.jsonz32|JSON files with base64 (*.json64)|*.json64|Binary files with zbase32 (*.binarz32)|*.binarz32|Binary files eith base64 (*.binar64)|*.binar64|Special files with zbase32(*.specialz32)|*.specialz32|Special files with base64(*.special64)|*.special64";
+
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                if (File.Exists(openFileDialog.FileName))
+                {
+                    string[] st = openFileDialog.FileName.Split('.');
+                    List<SwordsMan> a;
+
+                    MainSerializer serializer = ProjectContainer.instance.getSerializer(st[st.Length - 1]);
+
+                    if (serializer == null)
+                    {
+                        string pluginName = FindPluginNameByExtention(st[st.Length - 1]);
+                        string serializerName = FindSerializerNameByExtention(st[st.Length - 1]);
+
+                        MainSerializer newSerializer = ProjectContainer.instance.getSerializer(serializerName);
+                        PluginClass plugin = ProjectContainer.instance.getPluginFromDictionary(pluginName);
+
+                        a = newSerializer.DeserializeWithPlugin<SwordsMan>(openFileDialog.FileName, plugin);
+                    }
+                    else
+                    {
+                        a = serializer.Deserialize<SwordsMan>(openFileDialog.FileName);
+                    }
+
+                    if (a != null)
+                    {
+                        foreach (SwordsMan player in a)
+                        {
+                            bool isAdd = true;
+                            foreach (Player pl in SwordsMan.swordsmans)
+                            {
+                                if (player.getPlayerName() == pl.getPlayerName())
+                                {
+                                    isAdd = false;
+                                }
+                            }
+                            if (isAdd)
+                            {
+                                SwordsMan.swordsmans.Add(player);
+                            }
+                        }
+
+                        List<Player> players = new List<Player>(a);
+                        ProjectContainer.instance.putNewPlayers(archer.GetType().Name, SwordsMan.swordsmans);
+
+                        txtName.Text = a[a.Count - 1].getPlayerName();
+                        txtName.ReadOnly = false;
+                        txtAge.Text = a[a.Count - 1]._age.ToString();
+                        txtFizDamage.Text = a[a.Count - 1]._fizDamage.ToString();
+                        txtKritDamage.Text = a[a.Count - 1]._kritDamage.ToString();
+                        txtStamina.Text = a[a.Count - 1]._stamina.ToString();
+                        txtDefense.Text = a[a.Count - 1]._defence.ToString();
+                        txtCanUsesecondSword.Text = a[a.Count - 1]._canUseSecondSword;
+                        txtSwordsManSpecialSkill.Text = a[a.Count - 1]._skill;
+                        txtDopDamage.Text = a[a.Count - 1]._weapon._dopDamage.ToString();
+                        txtSpecialSkill.Text = a[a.Count - 1]._weapon._specialSkill;
+                        playerAddedShowEnabled = true;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Невозможно получить информацию " + archer.GetType().Name + " с файла");
+                    }
+                }
+            }
+            if (playerAddedShowEnabled)
+            {
+                playerAddedShowEnabled = false;
+                MessageBox.Show("Информация о " + archer.GetType().Name + " была успешно добавлена");
+            }
+        }
+
+        private void EditSwordsManForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                form.Enabled = true;
+                Hide();
+            }
+        }
+
+        public string FindPluginNameByExtention(string extention)
+        {
+            if (extention == "json64")
+            {
+                return "64";
+            }
+            else if (extention == "jsonz32")
+            {
+                return "z32";
+            }
+            else if (extention == "binar64")
+            {
+                return "64";
+            }
+            else if (extention == "binarz32")
+            {
+                return "z32";
+            }
+            else if (extention == "special64")
+            {
+                return "64";
+            }
+            else
+            {
+                return "z32";
+            }
+        }
+
+        public string FindSerializerNameByExtention(string extention)
+        {
+            if (extention == "json64")
+            {
+                return "json";
+            }
+            else if (extention == "jsonz32")
+            {
+                return "json";
+            }
+            else if (extention == "binar64")
+            {
+                return "binar";
+            }
+            else if (extention == "binarz32")
+            {
+                return "binar";
+            }
+            else if (extention == "special64")
+            {
+                return "special";
+            }
+            else
+            {
+                return "special";
             }
         }
     }

@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Players
 {
+    [Serializable]
     public class Archer : Warrior
     {
         int shotAccuracy;

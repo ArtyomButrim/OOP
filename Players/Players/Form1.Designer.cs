@@ -37,6 +37,7 @@
             this.charactersType = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.playerInfo = new System.Windows.Forms.CheckedListBox();
+            this.btnSave = new System.Windows.Forms.Button();
             this.EditPanel.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -51,9 +52,10 @@
             // 
             // AddPlayer
             // 
-            this.AddPlayer.Location = new System.Drawing.Point(63, 475);
+            this.AddPlayer.Enabled = false;
+            this.AddPlayer.Location = new System.Drawing.Point(29, 464);
             this.AddPlayer.Name = "AddPlayer";
-            this.AddPlayer.Size = new System.Drawing.Size(106, 32);
+            this.AddPlayer.Size = new System.Drawing.Size(132, 32);
             this.AddPlayer.TabIndex = 3;
             this.AddPlayer.Text = "Добавить";
             this.AddPlayer.UseVisualStyleBackColor = true;
@@ -61,9 +63,9 @@
             // 
             // DeletePlayer
             // 
-            this.DeletePlayer.Location = new System.Drawing.Point(175, 475);
+            this.DeletePlayer.Location = new System.Drawing.Point(180, 464);
             this.DeletePlayer.Name = "DeletePlayer";
-            this.DeletePlayer.Size = new System.Drawing.Size(99, 32);
+            this.DeletePlayer.Size = new System.Drawing.Size(137, 32);
             this.DeletePlayer.TabIndex = 4;
             this.DeletePlayer.Text = "Удалить";
             this.DeletePlayer.UseVisualStyleBackColor = true;
@@ -122,13 +124,26 @@
             this.playerInfo.Name = "playerInfo";
             this.playerInfo.Size = new System.Drawing.Size(288, 327);
             this.playerInfo.TabIndex = 8;
+            this.playerInfo.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.playerInfo_ItemCheck);
             this.playerInfo.SelectedIndexChanged += new System.EventHandler(this.playerInfo_SelectedIndexChanged_1);
+            // 
+            // btnSave
+            // 
+            this.btnSave.Enabled = false;
+            this.btnSave.Location = new System.Drawing.Point(104, 502);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(132, 32);
+            this.btnSave.TabIndex = 9;
+            this.btnSave.Text = "Сохранить";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(814, 528);
+            this.ClientSize = new System.Drawing.Size(814, 546);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.playerInfo);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.charactersType);
@@ -156,6 +171,7 @@
         private System.Windows.Forms.Button editInfo;
         private System.Windows.Forms.ListBox listBox1;
         private System.Windows.Forms.CheckedListBox playerInfo;
+        private System.Windows.Forms.Button btnSave;
     }
 }
 

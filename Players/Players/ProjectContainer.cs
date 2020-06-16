@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Plugin;
 
 namespace Players
 {
@@ -13,7 +14,8 @@ namespace Players
         public static ProjectContainer instance;
         private Dictionary<string, Form> playerDictionary = new Dictionary<string, Form>();
         private Dictionary<string, List<Player>> players = new Dictionary<string, List<Player>>();
-
+        private Dictionary<string, MainSerializer> serializers = new Dictionary<string, MainSerializer>();
+        private Dictionary<string, PluginClass> plugins = new Dictionary<string, PluginClass>();
         private Player currentPlayer = null;
 
         public ProjectContainer()
@@ -27,6 +29,36 @@ namespace Players
             {
                 playerDictionary.Add(playerType, form);
             }
+        }
+
+        public void putNewSerializer(MainSerializer serializer)
+        {
+            if (!serializers.ContainsKey(serializer.GetExtention()))
+            {
+                serializers.Add(serializer.GetExtention(), serializer);
+            }
+            else
+            {
+                serializers[serializer.GetExtention()] = serializer;
+            }
+        }
+
+        public MainSerializer getSerializer(string serial)
+        {
+            MainSerializer serializer = null;
+            if (serializers.TryGetValue(serial, out serializer))
+            {
+                return serializer;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public MainSerializer[] GetSerializersArray()
+        {
+            return serializers.Values.ToArray();
         }
 
         public Form getExistingForms(string playerType)
@@ -75,6 +107,32 @@ namespace Players
         public Player getCurrPlayer()
         {
             return currentPlayer;
+        }
+
+        public void addNewPluginToDictionary(string dictionaryKey, PluginClass pluginName)
+        {
+            
+            if (plugins.ContainsKey(dictionaryKey))
+            {
+                plugins[dictionaryKey] = pluginName;
+            }
+            else
+            {
+                plugins.Add(dictionaryKey, pluginName);
+            }
+        }
+
+        public PluginClass getPluginFromDictionary(string pluginName)
+        {
+            PluginClass findingPlugin = null;
+            if (plugins.TryGetValue(pluginName,out findingPlugin))
+            {
+                return findingPlugin;
+            }
+            else
+            {
+                return null;
+            }
         }
 
     }

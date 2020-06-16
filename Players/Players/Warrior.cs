@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Players
 {
+    [Serializable]
     public abstract class Warrior : Player
     {
         protected Weapon weapon;

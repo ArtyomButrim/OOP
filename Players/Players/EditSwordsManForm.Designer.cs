@@ -53,11 +53,13 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
+            this.openFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
             // 
             // btnSave
             // 
-            this.btnSave.Location = new System.Drawing.Point(270, 403);
+            this.btnSave.Location = new System.Drawing.Point(198, 403);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(109, 29);
             this.btnSave.TabIndex = 43;
@@ -265,11 +267,26 @@
             this.label13.TabIndex = 46;
             this.label13.Text = "Характеристики мечника";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(322, 403);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(109, 29);
+            this.button1.TabIndex = 47;
+            this.button1.Text = "Загрузить";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // openFileDialog
+            // 
+            this.openFileDialog.FileName = "openFileDialog";
+            // 
             // EditSwordsManForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(662, 444);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label13);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label12);
@@ -297,6 +314,7 @@
             this.Controls.Add(this.label1);
             this.Name = "EditSwordsManForm";
             this.Text = "EditSwordsManForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.EditSwordsManForm_FormClosing);
             this.VisibleChanged += new System.EventHandler(this.EditSwordsManForm_VisibleChanged);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -330,5 +348,7 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.OpenFileDialog openFileDialog;
     }
 }

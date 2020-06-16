@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Players
 {
+    [Serializable]
     public class SwordsMan : Warrior 
     {
         string skill;
