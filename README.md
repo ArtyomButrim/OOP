@@ -5,6 +5,11 @@ Labs on Object Oriented Programming(OOP)
 ### Task:
 
 1. Choose a topic, then build and describe a hierarchy of classes on that topic.
+
+   UML diagram:
+
+   ![UML diagram](https://github.com/ArtyomButrim/OOP/blob/master/assets/UML.jpg)
+
 2. Implement a program that allows to perform **CRUD** operations on objects.
 3. Implement the ability to save and load the list of objects to/from a file. The following types of serialization/deserialization must be implemented:
    - binary;
